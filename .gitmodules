@@ -1,0 +1,3 @@
+[submodule "protected/extensions/engine"]
+	path = protected/extensions/engine
+	url = https://github.com/MihailoJoksimovic/PHP-Chess
