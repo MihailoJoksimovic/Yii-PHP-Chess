@@ -1,3 +1,0 @@
-[submodule "protected/extensions/engine"]
-	path = protected/extensions/engine
-	url = git@github.com:MihailoJoksimovic/Yii-PHP-Chess.git
