@@ -7,6 +7,8 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	private $id;
+	
 	/**
 	 * Authenticates a user.
 	 * The example implementation makes sure if the username and password
@@ -30,8 +32,15 @@ class UserIdentity extends CUserIdentity
 		else
 		{
 			$this->errorCode=self::ERROR_NONE;
+			
+			$this->id = $model->id;
 		}
 	
 		return !$this->errorCode;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
 	}
 }
