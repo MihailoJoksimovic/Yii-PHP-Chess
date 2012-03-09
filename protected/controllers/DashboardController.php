@@ -76,6 +76,60 @@ class DashboardController extends Controller
 	
 	public function actionGame($id)
 	{
+		$user_id = Yii::app()->user->id;
+		
+		$game = Game::model()->findByPk($id);
+		
+		if ( ! $game)
+		{
+			throw new CHttpException(404);
+		}
+		
+		/* @var $game Game */
+		if ($game->Data->getWhitePlayer()->getId() != $user_id
+				&& $game->Data->getBlackPlayer()->getId() != $user_id)
+		{
+			throw new CHttpException(404, "You're not part of this game");
+		}
+		
+		$engine = new \Libs\GameEngine($game->Data);
+		
+		
+		$response_array = array();
+		
+		foreach ($game->Data->getChessBoard()->getAllChessPieces() AS $square)
+		{
+			/* @var $square \Libs\ChessBoardSquare */
+			$response_array['pieces'][]	= array(
+				'location' => "{$square->getLocation()->getColumn()},{$square->getLocation()->getRow()}",
+				'piece'	=> "{$square->getChessPiece()->getType()},{$square->getChessPiece()->getColor()}",
+			);
+		}
+		
+		foreach ($game->Data->getAllMovements() AS $move)
+		{
+			/* @var $move \Libs\Movement */
+			$response_array['pieces'][]	= array(
+				'from' => "{$move->getFrom()->getLocation()->getColumn()},{$move->getFrom()->getLocation()->getRow()}",
+				'to' => "{$move->getTo->getLocation()->getColumn()},{$move->getTo()->getLocation()->getRow()}",
+				'piece'	=> "{$move->getChessPiece()->getType()},{$move->getChessPiece()->getColor()}",
+			);
+		}
+		
+		
+		
+		if ($engine->getPlayerWhoseTurnIsNow()->getId() == $user_id)
+		{
+			$response_array['is_your_turn'] = true;
+		}
+		else
+		{
+			$response_array['is_your_turn'] = false;
+		}
+		
+		$this->layout = false;
+		
+		$this->render("game");
 		
 	}
 	

@@ -5,13 +5,15 @@
  *
  * The followings are the available columns in table 'game':
  * @property string $id
- * @property Game $data
+ * @property \Libs\ChessGame $Data
  * @property integer $is_finished
  * @property string $dt_added
  * @property string $game_hash
  */
 class Game extends CActiveRecord
 {
+	
+	protected $_data;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -120,11 +122,7 @@ class Game extends CActiveRecord
 		return parent::beforeSave();
 	}
 	
-	/**
-	 *
-	 * @return \Libs\ChessGame
-	 */
-	public function getdata()
+	public function getData()
 	{
 		// Check if serialized :-D
 		
@@ -140,7 +138,7 @@ class Game extends CActiveRecord
 		}
 	}
 	
-	public function setdata(\Libs\ChessGame $value)
+	public function setData($value)
 	{
 		$this->data = $value;
 	}
