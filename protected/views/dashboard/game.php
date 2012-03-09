@@ -10,6 +10,60 @@
 
 		<table id="chess_board" cellpadding="0" cellspacing="0">
 			<tr>
+			<?php foreach (range('A', 'H') AS $column): ?>
+			
+				<td><strong><?php echo $column; ?></strong></td>
+			
+			<?php endforeach; ?>
+			</tr>
+			
+			<?php /* for ($row = 1; $row <=8; $row++): ?>
+			<tr>
+				
+				<?php foreach (range('A', 'H') AS $column): ?>
+				<td id="<?php echo $column.$row ?>"></td>
+				<?php endforeach; ?>
+				
+			</tr>
+			
+			<?php endfor; */?>
+			
+			
+			<?php /* @var $game \Libs\ChessGame */ /* @var $drawHelper \Libs\SimpleDrawHelper */
+			foreach ($game->getChessBoard()->getBoardMatrix() AS $row): ?>
+			<tr>
+				<?php foreach ($row AS $column): /* @var $column \Libs\ChessBoardSquare */ ?>
+				<td id="<?php echo strtoupper($column->getLocation()->getColumn()).$column->getLocation()->getRow() ?>">
+					
+					<?php if ($column->getChessPiece()): ?>
+					
+					<a href="#" class="<?php echo $column->getChessPiece()->getType() . " " . $column->getChessPiece()->getColor(); ?>">
+						<?php echo $drawHelper->getChessPieceSymbol($column->getChessPiece());  ?>
+					</a>
+	
+	
+					<?php endif;?>
+				</td>
+				<?php endforeach; ?>
+			</tr>
+			<?php endforeach; ?>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!--
+			
+			<tr>
 				<td id="A8"><a href="#" class="rook black">&#9820;</a></td>
 				<td id="B8"><a href="#" class="night black">&#9822;</a></td>
 				<td id="C8"><a href="#" class="bishop black">&#9821;</a></td>
@@ -88,6 +142,15 @@
 				<td id="F1"><a href="#" class="bishop white">&#9815;</a></td>
 				<td id="G1"><a href="#" class="night white">&#9816;</a></td>
 				<td id="H1"><a href="#" class="rook white">&#9814;</a></td>
+			</tr>
+			-->
+			
+			<tr>
+			<?php foreach (range('A', 'H') AS $column): ?>
+			
+				<td><strong><?php echo $column; ?></strong></td>
+			
+			<?php endforeach; ?>
 			</tr>
 		</table>
 

@@ -129,7 +129,8 @@ class DashboardController extends Controller
 		
 		$this->layout = false;
 		
-		$this->render("game");
+		$this->render("game", array('game' => $game->Data, 'drawHelper' => new \Libs\SimpleDrawHelper()));
+		
 		
 	}
 	
