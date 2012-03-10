@@ -15,11 +15,13 @@
 		
 		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-left: 15%; margin-right: 30px;">
 			<tr>
+				<td></td>
 			<?php foreach (range('A', 'H') AS $column): ?>
 			
 				<td><strong><?php echo $column; ?></strong></td>
 			
 			<?php endforeach; ?>
+				<td></td>
 			</tr>
 			
 			<?php /* for ($row = 1; $row <=8; $row++): ?>
@@ -35,8 +37,11 @@
 			
 			
 			<?php /* @var $game \Libs\ChessGame */ /* @var $drawHelper \Libs\SimpleDrawHelper */
+			$rowNum = 8;
+			
 			foreach ($game->getChessBoard()->getBoardMatrix() AS $row): ?>
 			<tr>
+				<td><strong><?php echo $rowNum ?></strong></td>
 				<?php foreach ($row AS $column): /* @var $column \Libs\ChessBoardSquare */ ?>
 				<td id="<?php echo strtoupper($column->getLocation()->getColumn()).$column->getLocation()->getRow() ?>" class="clickable">
 					
@@ -53,6 +58,7 @@
 					<?php endif;?>
 				</td>
 				<?php endforeach; ?>
+				<td><strong><?php echo $rowNum-- ?></strong></td>
 			</tr>
 			<?php endforeach; ?>
 			
@@ -154,11 +160,13 @@
 			-->
 			
 			<tr>
+				<td></td>
 			<?php foreach (range('A', 'H') AS $column): ?>
 			
 				<td><strong><?php echo $column; ?></strong></td>
 			
 			<?php endforeach; ?>
+				<td></td>
 			</tr>
 		</table>
 		
