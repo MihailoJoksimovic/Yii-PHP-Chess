@@ -115,6 +115,78 @@ class DashboardController extends Controller
 				{
 					$game->save();
 				}
+				
+				var_dump($result);
+			}
+		}
+		else
+		{
+			if ($engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
+			{
+				$uci = new \Libs\UCI();
+
+				// TOTO: Set AI's SKILL LEVEL !!!
+				
+				foreach ($game->Data->getAllMovements() AS $movement)
+				{
+					/* @var $movement Movement */
+					if ($movement->isSpecialMove())
+					{
+						if ($movement->getSpecialMove() == 'castle-kingSide')
+						{
+							if ($movement->getFrom()->getLocation()->getRow() == 1)
+							{
+								$move_array[] = "e1g1";
+							}
+							else
+							{
+								$move_array[]	= "e8g8";
+							}
+						}
+						elseif($movement->getSpecialMove() == 'castle-queenSide')
+						{
+							if ($movement->getFrom()->getLocation()->getRow() == 1)
+							{
+								$move_array[] = "e1c1";
+							}
+							else
+							{
+								$move_array[]	= "e8c8";
+							}
+						}
+					}
+					else
+					{
+						/* @var $movement \Libs\Movement */
+						$move_array[]	= $movement->getFrom()->getLocation()->getColumn() . $movement->getFrom()->getLocation()->getRow()
+							 . $movement->getTo()->getLocation()->getColumn() . $movement->getTo()->getLocation()->getRow()
+						;
+					}
+
+				}
+				
+				$ai_result	= $uci->getBestMove($move_array);
+				
+				if ( ! isset($ai_result['bestmove']))
+				{
+					Yii::log("[Game ID: {$game->id}] AI didn't respond. Moves array: " . print_r($move_array, true), CLogger::LEVEL_ERROR);
+					
+					throw new CHttpException(500, Yii::t('error', "AI didn't respond in a timely manner!"));
+				}
+				
+				$aiMove = new MoveForm;
+				
+				$aiMove->from = $ai_result['bestmove'][0] . $ai_result['bestmove'][1];
+				$aiMove->to = $ai_result['bestmove'][2] . $ai_result['bestmove'][3];
+				
+				$processor = new MoveProcessor;
+				
+				$result = $processor->process($aiMove, $game, true);
+				
+				if ($result == MoveProcessor::NO_ERROR)
+				{
+					$game->save();
+				}
 			}
 		}
 		
@@ -161,7 +233,7 @@ class DashboardController extends Controller
 		$chessGame = $game->Data;
 	
 		
-		$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper(), 'gameId' => $game->id));
+		$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper(), 'gameId' => $game->id, 'ajaxResponse' => $response_array));
 		
 		
 	}

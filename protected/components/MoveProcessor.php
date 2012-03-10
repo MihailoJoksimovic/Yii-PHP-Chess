@@ -9,7 +9,7 @@ class MoveProcessor extends CComponent
 	const ERROR_CHECKMATE = 4;
 	const ERROR_GAME_FINISHED = 5;
 	
-	public function process(MoveForm $move, Game $gameModel)
+	public function process(MoveForm $move, Game $gameModel, $ai_turn = false)
 	{
 		$game = $gameModel->Data;
 		$engine = new \Libs\GameEngine($game);
@@ -17,6 +17,11 @@ class MoveProcessor extends CComponent
 		if ($game->isGameFinished())
 		{
 			return self::ERROR_GAME_FINISHED;
+		}
+		
+		if ($ai_turn == false && $engine->getPlayerWhoseTurnIsNow()->getId() != Yii::app()->user->id)
+		{
+			return self::ERROR_NOT_YOUR_TURN;
 		}
 		
 		

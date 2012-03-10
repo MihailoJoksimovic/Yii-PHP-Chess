@@ -4,12 +4,16 @@
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<link rel="stylesheet" href="css/board.css" type="text/css" />
+		
+		<?php if ($ajaxResponse['is_your_turn'] != true): ?>
+		<meta http-equiv="refresh" content="3" />
+		<?php endif; ?>
 	</head>
 
 	<body>
 
 		
-		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-right: 30px;">
+		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-left: 15%; margin-right: 30px;">
 			<tr>
 			<?php foreach (range('A', 'H') AS $column): ?>
 			
@@ -158,20 +162,28 @@
 			</tr>
 		</table>
 		
-		<div id="moves_list" style="padding-left: 35px;">
+		
+		<!---- Moves List -------->
+		
+		<div id="moves_list" style="">
+			<h2><?php echo Yii::t('messages', "Moves List"); ?></h2>
+			
 			<?php /* $var $game \Libs\ChessGame */ ?>
-			<?php foreach ($game->getAllMovements() AS $move): ?>
+			<?php $i = 0; foreach ($game->getAllMovements() AS $move): ?>
 			
 			<p>
+				<?php echo ++$i ?>.
+				
 			<?php /* @var $move \Libs\Movement */ 
-			echo $move->getFrom()->getLocation()->getColumn() .  $move->getFrom()->getLocation()->getColumn()
-					. $move->getTo()->getLocation()->getColumn() .  $move->getTo()->getLocation()->getColumn()?>
+			echo $drawHelper->getChessPieceSymbol($move->getChessPiece())
+					. strtoupper($move->getFrom()->getLocation()->getColumn()) .  $move->getFrom()->getLocation()->getRow()
+					. strtoupper($move->getTo()->getLocation()->getColumn()) .  $move->getTo()->getLocation()->getRow()?>
 			</p>
 			<?php endforeach; ?>
 			
 			
 		</div>
-		
+		<!---- #Moves List --->
 		
 		<form id="moveForm" name="moveForm" method="POST" action="<?php echo $this->createUrl('dashboard/game', array('id' => $gameId)); ?>">
 			<input type="hidden" name="from" value="" id="move_from" />
