@@ -130,12 +130,10 @@ class Game extends CActiveRecord
 		
 		if ($data !== false)
 		{
-			return $data;
+			$this->data = $data;
 		}
-		else
-		{
-			return $this->data;
-		}
+		
+		return $this->data;
 	}
 	
 	public function setData($value)

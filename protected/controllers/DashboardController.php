@@ -93,9 +93,38 @@ class DashboardController extends Controller
 		}
 		
 		$engine = new \Libs\GameEngine($game->Data);
-		
-		
 		$response_array = array();
+		
+		if ( ! empty($_POST))
+		{
+			$moveForm = new MoveForm;
+			$moveForm->attributes = $_POST;
+			
+			if ( ! $moveForm->validate())
+			{
+				$response_array['status'] = 'error';
+				$response_array['message'] = Yii::t('Invalid movement requested');
+			}
+			else
+			{
+				$processor = new MoveProcessor;
+				
+				$result = $processor->process($moveForm, $game);
+				
+				if ($result == MoveProcessor::NO_ERROR)
+				{
+					$game->save();
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		foreach ($game->Data->getChessBoard()->getAllChessPieces() AS $square)
 		{
@@ -111,7 +140,7 @@ class DashboardController extends Controller
 			/* @var $move \Libs\Movement */
 			$response_array['pieces'][]	= array(
 				'from' => "{$move->getFrom()->getLocation()->getColumn()},{$move->getFrom()->getLocation()->getRow()}",
-				'to' => "{$move->getTo->getLocation()->getColumn()},{$move->getTo()->getLocation()->getRow()}",
+				'to' => "{$move->getTo()->getLocation()->getColumn()},{$move->getTo()->getLocation()->getRow()}",
 				'piece'	=> "{$move->getChessPiece()->getType()},{$move->getChessPiece()->getColor()}",
 			);
 		}
@@ -132,7 +161,7 @@ class DashboardController extends Controller
 		$chessGame = $game->Data;
 	
 		
-		$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper()));
+		$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper(), 'gameId' => $game->id));
 		
 		
 	}

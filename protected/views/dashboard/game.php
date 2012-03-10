@@ -2,13 +2,14 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<link rel="stylesheet" href="css/board.css" type="text/css" />
 	</head>
 
 	<body>
 
-		<table id="chess_board" cellpadding="0" cellspacing="0">
+		
+		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-right: 30px;">
 			<tr>
 			<?php foreach (range('A', 'H') AS $column): ?>
 			
@@ -33,7 +34,7 @@
 			foreach ($game->getChessBoard()->getBoardMatrix() AS $row): ?>
 			<tr>
 				<?php foreach ($row AS $column): /* @var $column \Libs\ChessBoardSquare */ ?>
-				<td id="<?php echo strtoupper($column->getLocation()->getColumn()).$column->getLocation()->getRow() ?>">
+				<td id="<?php echo strtoupper($column->getLocation()->getColumn()).$column->getLocation()->getRow() ?>" class="clickable">
 					
 					<?php if ($column->getChessPiece()): ?>
 					
@@ -41,7 +42,10 @@
 						<?php echo $drawHelper->getChessPieceSymbol($column->getChessPiece());  ?>
 					</a>
 	
-	
+					<?php else: ?>
+					<a href="#">
+						
+					</a>
 					<?php endif;?>
 				</td>
 				<?php endforeach; ?>
@@ -153,6 +157,55 @@
 			<?php endforeach; ?>
 			</tr>
 		</table>
+		
+		<div id="moves_list" style="padding-left: 35px;">
+			<?php /* $var $game \Libs\ChessGame */ ?>
+			<?php foreach ($game->getAllMovements() AS $move): ?>
+			
+			<p>
+			<?php /* @var $move \Libs\Movement */ 
+			echo $move->getFrom()->getLocation()->getColumn() .  $move->getFrom()->getLocation()->getColumn()
+					. $move->getTo()->getLocation()->getColumn() .  $move->getTo()->getLocation()->getColumn()?>
+			</p>
+			<?php endforeach; ?>
+			
+			
+		</div>
+		
+		
+		<form id="moveForm" name="moveForm" method="POST" action="<?php echo $this->createUrl('dashboard/game', array('id' => $gameId)); ?>">
+			<input type="hidden" name="from" value="" id="move_from" />
+			<input type="hidden" name="to" value="" id="move_to" />
+		</form>
+		
+		<script type="text/javascript">
+		$(document).ready(function(){
+			var from_pos = false;
+			var to_pos = false;
+			
+			$(".clickable").click(function() {
+				if ( ! from_pos)
+				{
+					from_pos = $(this).attr('id');
+				}
+				else if ( ! to_pos)
+				{
+					to_pos = $(this).attr('id');
+					submitMove(from_pos, to_pos);
+				}
+			});
+		});
+	
+	
+	
+		function submitMove(from, to)
+		{
+			$("#move_from").val(from);
+			$("#move_to").val(to);
+			$("#moveForm").submit();
+		}
+	
+		</script>
 
 	</body>
 
