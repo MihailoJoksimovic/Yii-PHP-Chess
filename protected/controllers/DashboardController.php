@@ -132,6 +132,9 @@ class DashboardController extends Controller
 					/* @var $movement Movement */
 					if ($movement->isSpecialMove())
 					{
+						echo "We have special move !";
+						die();
+						
 						if ($movement->getSpecialMove() == 'castle-kingSide')
 						{
 							if ($movement->getFrom()->getLocation()->getRow() == 1)
@@ -195,9 +198,6 @@ class DashboardController extends Controller
 		
 		
 		
-		
-		
-		
 		foreach ($game->Data->getChessBoard()->getAllChessPieces() AS $square)
 		{
 			/* @var $square \Libs\ChessBoardSquare */
@@ -207,13 +207,19 @@ class DashboardController extends Controller
 			);
 		}
 		
+//		var_dump($game->Data->getAllMovements());
+//		
+//		die();
 		foreach ($game->Data->getAllMovements() AS $move)
 		{
+			
+			
 			/* @var $move \Libs\Movement */
 			$response_array['pieces'][]	= array(
 				'from' => "{$move->getFrom()->getLocation()->getColumn()},{$move->getFrom()->getLocation()->getRow()}",
 				'to' => "{$move->getTo()->getLocation()->getColumn()},{$move->getTo()->getLocation()->getRow()}",
-				'piece'	=> "{$move->getChessPiece()->getType()},{$move->getChessPiece()->getColor()}",
+				'specialMove' => $move->getSpecialMove(),
+				'piece'	=> ( ! $move->isSpecialMove() ? "{$move->getChessPiece()->getType()},{$move->getChessPiece()->getColor()}" : ""),
 			);
 		}
 		
@@ -232,8 +238,15 @@ class DashboardController extends Controller
 		
 		$chessGame = $game->Data;
 	
+		if (Yii::app()->request->isAjaxRequest)
+		{
+			
+		}
+		else
+		{
+			$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper(), 'gameId' => $game->id, 'ajaxResponse' => $response_array));
+		}
 		
-		$this->render("game", array('game' => $chessGame, 'drawHelper' => new \Libs\SimpleDrawHelper(), 'gameId' => $game->id, 'ajaxResponse' => $response_array));
 		
 		
 	}

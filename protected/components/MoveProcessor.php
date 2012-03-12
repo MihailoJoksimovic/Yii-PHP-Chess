@@ -50,15 +50,77 @@ class MoveProcessor extends CComponent
 		
 		$movingPiece = $sourceSquare->getChessPiece();
 		$movingPiece->increaseMovements();
+	
+		
+		if ($specialMovement)
+		{
+			if ($specialMovement == \Enums\SpecialMovement::CASTLING)
+			{
+				if ($sourceSquare->getLocation()->getColumn() > $destinationSquare->getLocation()->getColumn())
+				{
+					// King is moving to the left
+
+					$newKingLocation	= $game->getChessBoard()->getSquareByLocation(
+							new \Libs\Coordinates($sourceSquare->getLocation()->getRow(), 'c')
+					);
+
+					$newRookLocation	= $game->getChessBoard()->getSquareByLocation(
+							new \Libs\Coordinates($sourceSquare->getLocation()->getRow(), 'd')
+					);
+
+					$castleType = "castle-queenSide";
+				}
+				else
+				{
+					// King is moving to the left
+
+					$newKingLocation	= $game->getChessBoard()->getSquareByLocation(
+							new \Libs\Coordinates($sourceSquare->getLocation()->getRow(), 'g')
+					);
+
+					$newRookLocation	= $game->getChessBoard()->getSquareByLocation(
+							new \Libs\Coordinates($sourceSquare->getLocation()->getRow(), 'f')
+					);
+
+					$castleType = "castle-kingSide";
+				}
+
+				$king = $sourceSquare->getChessPiece();
+				$rook = $destinationSquare->getChessPiece();
+
+				$sourceSquare->setChessPiece(null);
+				$destinationSquare->setChessPiece(null);
+
+				$newKingLocation->setChessPiece($king);
+				$newRookLocation->setChessPiece($rook);
+
+				$game->addMovement(new Libs\Movement($sourceSquare, $newKingLocation, $castleType));
+			}
+			else if ($specialMovement == \Enums\SpecialMovement::PROMOTION)
+			{
+				$destinationSquare->setChessPiece(
+						new \Libs\ChessPiece(\Enums\ChessPieceType::QUEEN, $engine->getPlayerWhoseTurnIsNow()->getColor())
+				);
+
+				$sourceSquare->setChessPiece(null);
+
+				$game->addMovement(new Libs\Movement($sourceSquare, $destinationSquare));
+
+			}
+		}
+		else
+		{
+			$sourceSquare->setChessPiece(null);
+			$destinationSquare->setChessPiece($movingPiece);
+			
+			$game->addMovement(new \Libs\Movement($sourceSquare, $destinationSquare));
+		}
 		
 		
-		
-		$sourceSquare->setChessPiece(null);
-		$destinationSquare->setChessPiece($movingPiece);
 		
 //		var_dump($destinationSquare);
 		
-		$game->addMovement(new \Libs\Movement($sourceSquare, $destinationSquare));
+		
 		
 //		var_dump($gameModel->Data->getAllMovements());
 //		die();

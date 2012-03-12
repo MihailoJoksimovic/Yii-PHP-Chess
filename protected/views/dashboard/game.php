@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="css/board.css" type="text/css" />
 		
 		<?php if ($ajaxResponse['is_your_turn'] != true): ?>
-		<meta http-equiv="refresh" content="3" />
+		<meta http-equiv="refresh" content="2" />
 		<?php endif; ?>
 	</head>
 
@@ -182,11 +182,21 @@
 			<p>
 				<?php echo ++$i ?>.
 				
+				<?php if ($move->isSpecialMove()): ?>
+					<?php if ($move->getSpecialMove() == 'castle-kingSide'): ?>
+						0-0
+						
+					<?php elseif ($move->getSpecialMove() == 'castle-queenSide'): ?>
+						0-0-0
+					<?php endif; ?>
+				<?php endif; ?>
+				
 			<?php /* @var $move \Libs\Movement */ 
 			echo $drawHelper->getChessPieceSymbol($move->getChessPiece())
 					. strtoupper($move->getFrom()->getLocation()->getColumn()) .  $move->getFrom()->getLocation()->getRow()
 					. strtoupper($move->getTo()->getLocation()->getColumn()) .  $move->getTo()->getLocation()->getRow()?>
 			</p>
+			
 			<?php endforeach; ?>
 			
 			
