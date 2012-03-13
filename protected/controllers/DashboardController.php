@@ -195,6 +195,13 @@ class DashboardController extends Controller
 								$move_array[]	= "e8c8";
 							}
 						}
+						elseif($movement->getSpecialMove() == \Enums\SpecialMovement::PROMOTION)
+						{
+							$move_array[]	=  $movement->getFrom()->getLocation()->getColumn() . $movement->getFrom()->getLocation()->getRow()
+							 . $movement->getTo()->getLocation()->getColumn() . $movement->getTo()->getLocation()->getRow()
+							 . "q"
+							;
+						}
 					}
 					else
 					{

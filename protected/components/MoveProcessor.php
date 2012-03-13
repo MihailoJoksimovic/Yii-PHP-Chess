@@ -104,7 +104,7 @@ class MoveProcessor extends CComponent
 
 				$sourceSquare->setChessPiece(null);
 
-				$game->addMovement(new Libs\Movement($sourceSquare, $destinationSquare));
+				$game->addMovement(new Libs\Movement($sourceSquare, $destinationSquare, \Enums\SpecialMovement::PROMOTION));
 
 			}
 		}
