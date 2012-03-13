@@ -114,6 +114,14 @@ class DashboardController extends Controller
 				if ($result == MoveProcessor::NO_ERROR)
 				{
 					$game->save();
+					
+					// Check if we just made check-mate ? 
+					$opponentsKing	= $game->Data->getChessBoard()->findChessPiece(new \Libs\ChessPiece("king", $engine->getPlayerWhoseTurnIsNow()->getColor()));
+					
+					if ($engine->isSquareUnderAttack($opponentsKing) && $engine->isKingUnderCheckMate($opponentsKing))
+					{
+						Yii::app()->user->setFlash('notice', Yii::t('success', "Congratulations ! You have sucessfully check-mated your opponent !"));
+					}
 				}
 				else
 				{
@@ -145,7 +153,7 @@ class DashboardController extends Controller
 		}
 		else
 		{
-			if ($engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
+			if ( ! $game->is_finished && $engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
 			{
 				$uci = new \Libs\UCI();
 
@@ -156,9 +164,6 @@ class DashboardController extends Controller
 					/* @var $movement Movement */
 					if ($movement->isSpecialMove())
 					{
-						echo "We have special move !";
-						die();
-						
 						if ($movement->getSpecialMove() == 'castle-kingSide')
 						{
 							if ($movement->getFrom()->getLocation()->getRow() == 1)
@@ -215,7 +220,29 @@ class DashboardController extends Controller
 					$game->save();
 				}
 			}
+			
+			if ( ! $game->is_finished)
+			{
+				// Check for check-mate
+				$ourKing	= $game->Data->getChessBoard()->findChessPiece(new \Libs\ChessPiece("king", $engine->getPlayerWhoseTurnIsNow()->getColor()));
+
+				if ($engine->isKingUnderCheckMate($ourKing))
+				{
+					$game->is_finished = true;
+
+					$game->save();
+
+					Yii::app()->user->setFlash('error', Yii::t('error', "Your king is under check mate ! Game Finished"));
+
+					$response_array['is_check_mate']	= true;
+				}
+			}
+			else
+			{
+				Yii::app()->user->setFlash('notice', Yii::t('info', "This game is finished"));
+			}
 		}
+		
 		
 		
 		
