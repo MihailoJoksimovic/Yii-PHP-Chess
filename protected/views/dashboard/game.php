@@ -213,7 +213,14 @@
 			var from_pos = false;
 			var to_pos = false;
 			
+			var is_your_turn = <?php echo ($ajaxResponse['is_your_turn'])?1:0 ?>;
+			
 			$(".clickable").click(function() {
+				if ( ! is_your_turn)
+				{
+					return;
+				}
+				
 				if ( ! from_pos)
 				{
 					from_pos = $(this).attr('id');
@@ -223,7 +230,10 @@
 					to_pos = $(this).attr('id');
 					submitMove(from_pos, to_pos);
 				}
+				
+				$(this).css('background', '#09f');
 			});
+			
 		});
 	
 	
@@ -234,6 +244,7 @@
 			$("#move_to").val(to);
 			$("#moveForm").submit();
 		}
+		
 	
 		</script>
 

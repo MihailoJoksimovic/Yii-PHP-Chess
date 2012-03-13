@@ -9,6 +9,18 @@ a {
 	width:80px;
 }
 #chess_board { border:5px solid #333; }
+
+#chess_board td:hover,#chess_board tr:nth-child(odd):hover td:nth-child(even):hover,
+#chess_board tr:nth-child(even):hover td:nth-child(odd):hover, .selectedSquare
+{
+	background:#09f;
+	background:-moz-linear-gradient(top, #fff, #09f);
+	background:-webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#09f));
+	box-shadow:inset 0 0 0 1px #fff;
+	-moz-box-shadow:inset 0 0 0 1px #fff;
+	-webkit-box-shadow:inset 0 0 0 1px #fff;
+}
+
 #chess_board td {
 	background:#fff;
 	background:-moz-linear-gradient(top, #fff, #eee);
@@ -21,6 +33,7 @@ a {
 	vertical-align:middle;
 	width:80px;
 }
+
 #chess_board tr:nth-child(odd) td:nth-child(even),
 #chess_board tr:nth-child(even) td:nth-child(odd) {
 	background:#ccc;
@@ -29,4 +42,11 @@ a {
 	box-shadow:inset 0 0 10px rgba(0,0,0,.4);
 	-moz-box-shadow:inset 0 0 10px rgba(0,0,0,.4);
 	-webkit-box-shadow:inset 0 0 10px rgba(0,0,0,.4);
+}
+
+/** Defined by Mixa ;) */
+
+#moves_list {
+	max-height: 800px;
+	overflow: auto;
 }
