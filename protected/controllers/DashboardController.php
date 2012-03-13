@@ -41,7 +41,7 @@ class DashboardController extends Controller
 			
 			if ( ! $gameModel->insert())
 			{
-				Yii::app()->user->setFlash('error', "Interlan error occurred (22)");
+				Yii::app()->user->setFlash('error', "Internal error occurred (22)");
 			}
 			else
 			{
@@ -115,8 +115,32 @@ class DashboardController extends Controller
 				{
 					$game->save();
 				}
-				
-				var_dump($result);
+				else
+				{
+					switch ($result)
+					{
+						case MoveProcessor::ERROR_INVALID_MOVEMENT:
+							Yii::app()->user->setFlash('error', Yii::t('error', "Invalid movement requested !"));
+							break;
+						
+						case MoveProcessor::ERROR_NOT_YOUR_TURN:
+							Yii::app()->user->setFlash('error', Yii::t('error', "It is not your turn !"));
+							break;
+						
+						case MoveProcessor::ERROR_CHECKMATE:
+							Yii::app()->user->setFlash('error', Yii::t('error', "Check-mate ! Game over!"));
+							break;
+						
+						case MoveProcessor::ERROR_GAME_FINISHED:
+							Yii::app()->user->setFlash('error', Yii::t('error', "This game is finished !"));
+							break;
+						
+						default:
+							Yii::app()->user->setFlash('error', Yii::t('error', "Unknown error occured (43) !"));
+							Yii::log("Unrecognized errur code received from MoveProcessor: $result", CLogger::LEVEL_ERROR);
+							break;
+					}
+				}
 			}
 		}
 		else

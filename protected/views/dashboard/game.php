@@ -11,9 +11,19 @@
 	</head>
 
 	<body>
+		
+		<div id="container" style="margin-left: 15%;">
+		
+		<div class="flash-messages">
+			<?php
+				foreach(Yii::app()->user->getFlashes() as $key => $message) {
+					echo '<div class="flash-' . $key . '">' . $message . "</div>\n";
+				}
+			?>
+		</div>
 
 		
-		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-left: 15%; margin-right: 30px;">
+		<table id="chess_board" cellpadding="0" cellspacing="0" style="float: left; margin-right: 30px;">
 			<tr>
 				<td></td>
 			<?php foreach (range('A', 'H') AS $column): ?>
@@ -208,8 +218,19 @@
 			<input type="hidden" name="to" value="" id="move_to" />
 		</form>
 		
+		</div>
+		
 		<script type="text/javascript">
 		$(document).ready(function(){
+			
+			///
+			///
+			/// NEVER EVER EVER MOVE THIS TO SEPARATE JS FILE !!!!!
+			///
+			///
+			///
+			
+					
 			var from_pos = false;
 			var to_pos = false;
 			
