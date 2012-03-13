@@ -7,7 +7,7 @@ class DashboardController extends Controller
 		error_reporting(E_ALL); ini_set('display_errors', 1);
 		if ( ! empty($_POST))
 		{
-			if (in_array($_POST['game_type'], array(1,2)))
+			if (in_array($_POST['game_type'], array(1,2,3)))
 			{
 				$whitePlayer = new \Libs\Player("white");
 				$whitePlayer->setType(\Libs\Player::HUMAN);
@@ -23,6 +23,13 @@ class DashboardController extends Controller
 				{
 					$blackPlayer = new \Libs\Player("black");
 					$blackPlayer->setType(\Libs\Player::AI);
+				}
+				elseif ($_POST['game_type'] == 3) // CPU vs CPU
+				{
+					$blackPlayer = new \Libs\Player("black");
+					$blackPlayer->setType(\Libs\Player::AI);
+					
+					$whitePlayer->setType(\Libs\Player::AI);
 				}
 			}
 			
@@ -156,6 +163,8 @@ class DashboardController extends Controller
 			if ( ! $game->is_finished && $engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
 			{
 				$uci = new \Libs\UCI();
+				
+				$move_array = array();
 
 				// TOTO: Set AI's SKILL LEVEL !!!
 				
@@ -276,7 +285,7 @@ class DashboardController extends Controller
 		
 		
 		
-		if ($engine->getPlayerWhoseTurnIsNow()->getId() == $user_id)
+		if ($engine->getPlayerWhoseTurnIsNow()->getId() == $user_id && $engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::HUMAN)
 		{
 			$response_array['is_your_turn'] = true;
 		}

@@ -21,6 +21,7 @@ $this->breadcrumbs = array(
 		<option value="0">Game Type</option>
 		<option value="1">Player VS Player</option>
 		<option value="2">Player VS Computer</option>
+		<option value="3">Computer VS Computer</option>
 	</select>
 
 	<div id="ai_skill" style="display:none;">
