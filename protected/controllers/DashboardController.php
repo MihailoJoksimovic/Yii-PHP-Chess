@@ -92,6 +92,17 @@ class DashboardController extends Controller
 			throw new CHttpException(404);
 		}
 		
+
+		
+//		foreach(\Libs\GameExporter::getAlgebraicNotation($game->Data) AS $row)
+//		{
+//			echo $row . " ";
+//		}
+//		
+//		
+//		
+//		die();
+		
 		/* @var $game Game */
 		if ($game->Data->getWhitePlayer()->getId() != $user_id
 				&& $game->Data->getBlackPlayer()->getId() != $user_id)
@@ -160,9 +171,26 @@ class DashboardController extends Controller
 		}
 		else
 		{
+//			if ( ! $game->is_finished)
+//			{
+//				// Check for check-mate
+//				$ourKing	= $game->Data->getChessBoard()->findChessPiece(new \Libs\ChessPiece("king", $engine->getPlayerWhoseTurnIsNow()->getColor()));
+//
+//				if ($engine->isKingUnderCheckMate($ourKing))
+//				{
+//					$game->is_finished = true;
+//
+//					$game->save();
+//
+//					Yii::app()->user->setFlash('error', Yii::t('error', "Your king is under check mate ! Game Finished"));
+//
+//					$response_array['is_check_mate']	= true;
+//				}
+//			}
+			
 			if ( ! $game->is_finished && $engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
 			{
-				$uci = new \Libs\UCI();
+				$uci = \Libs\UCI::get();
 				
 				$move_array = array();
 
@@ -222,10 +250,29 @@ class DashboardController extends Controller
 					throw new CHttpException(500, Yii::t('error', "AI didn't respond in a timely manner!"));
 				}
 				
+				
+				
 				$aiMove = new MoveForm;
 				
 				$aiMove->from = $ai_result['bestmove'][0] . $ai_result['bestmove'][1];
 				$aiMove->to = $ai_result['bestmove'][2] . $ai_result['bestmove'][3];
+				
+				//
+				// Shitty work-around if UCI wants to make castling movement
+				//
+				
+				if (in_array($aiMove->from, array('e1', 'e8'))
+						&& in_array($aiMove->to, array('c1', 'c8', 'g1', 'g8')))
+				{
+					if ($aiMove->to[0] == 'c')
+					{
+						$aiMove->to[0] = 'a';
+					}
+					else
+					{
+						$aiMove->to[0] = 'h';
+					}
+				}
 				
 				$processor = new MoveProcessor;
 				
@@ -234,6 +281,11 @@ class DashboardController extends Controller
 				if ($result == MoveProcessor::NO_ERROR)
 				{
 					$game->save();
+				}
+				else
+				{
+					Yii::app()->user->setFlash('error', Yii::t('error', "Move Processor returned error code: $result for AI's best move: {$ai_result['bestmove']}"));
+					Yii::log("Unrecognized errur code received from MoveProcessor: $result", CLogger::LEVEL_ERROR);
 				}
 			}
 			
