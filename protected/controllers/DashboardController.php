@@ -5,9 +5,10 @@ class DashboardController extends Controller
 	public function actionIndex()
 	{
 		error_reporting(E_ALL); ini_set('display_errors', 1);
+		
 		if ( ! empty($_POST))
 		{
-			if (in_array($_POST['game_type'], array(1,2,3)))
+			if (in_array($_POST['game_type'], array(1,2,3,4)))
 			{
 				$whitePlayer = new \Libs\Player("white");
 				$whitePlayer->setType(\Libs\Player::HUMAN);
@@ -31,6 +32,10 @@ class DashboardController extends Controller
 					
 					$whitePlayer->setType(\Libs\Player::AI);
 				}
+				elseif ($_POST['game_type'] == 4) // Player VS Player (separate screens)
+				{
+					$blackPlayer = new \Libs\Player("black");
+				}
 			}
 			
 			$chessBoard = new \Libs\ChessBoard;
@@ -52,6 +57,22 @@ class DashboardController extends Controller
 			}
 			else
 			{
+				$userGames = new UserGames();
+				
+				$userGames->game_id = $gameModel->id;
+				$userGames->user_id	= $whitePlayer->getId();
+				
+				$userGames->insert();
+				
+				if ($gameModel->Data->getBlackPlayer()->getType())
+				{
+					$userGames2 = new UserGames();
+					$userGames2->game_id = $gameModel->id;
+					$userGames2->user_id	= $blackPlayer->getId();
+
+					$userGames2->insert();
+				}
+						
 				$this->redirect(array('dashboard/game', 'id' => $gameModel->id));
 			}
 		}
@@ -92,6 +113,9 @@ class DashboardController extends Controller
 			throw new CHttpException(404);
 		}
 		
+		
+		/* @var $game Game */
+		
 
 		
 //		foreach(\Libs\GameExporter::getAlgebraicNotation($game->Data) AS $row)
@@ -103,11 +127,43 @@ class DashboardController extends Controller
 //		
 //		die();
 		
-		/* @var $game Game */
+		
 		if ($game->Data->getWhitePlayer()->getId() != $user_id
 				&& $game->Data->getBlackPlayer()->getId() != $user_id)
 		{
-			throw new CHttpException(404, "You're not part of this game");
+			// Maybe you can join this game if there's some free place
+			if ( ! $game->Data->getWhitePlayer()->getType())
+			{
+				$game->Data->getWhitePlayer()->setType(\Libs\Player::HUMAN);
+				$game->Data->getWhitePlayer()->setId(Yii::app()->user->id);
+				
+				$game->save();
+				
+				$userGames = new UserGames();
+				
+				$userGames->game_id = $game->id;
+				$userGames->user_id = Yii::app()->user->id;
+				
+				$userGames->insert();
+			}
+			elseif ( ! $game->Data->getBlackPlayer()->getType())
+			{
+				$game->Data->getBlackPlayer()->setType(\Libs\Player::HUMAN);
+				$game->Data->getBlackPlayer()->setId(Yii::app()->user->id);
+				
+				$game->save();
+				
+				$userGames = new UserGames();
+				
+				$userGames->game_id = $game->id;
+				$userGames->user_id = Yii::app()->user->id;
+				
+				$userGames->insert();
+			}
+			else
+			{
+				throw new CHttpException(404, "You're not part of this game");
+			}
 		}
 		
 		$engine = new \Libs\GameEngine($game->Data);
@@ -191,6 +247,8 @@ class DashboardController extends Controller
 			if ( ! $game->is_finished && $engine->getPlayerWhoseTurnIsNow()->getType() == \Libs\Player::AI)
 			{
 				$uci = \Libs\UCI::get();
+				
+				$uci->setSkillLevel(1);
 				
 				$move_array = array();
 

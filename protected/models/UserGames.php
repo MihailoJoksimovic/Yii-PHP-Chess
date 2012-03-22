@@ -94,4 +94,39 @@ class UserGames extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	
+	/**
+	 *
+	 * @param type $limit
+	 * @return array|Game
+	 */
+	public function getRecentGames($limit = 10)
+	{
+		$sql = "SELECT game_id
+
+			FROM games_users
+
+			INNER JOIN game ON games_users.`game_id` = game.`id`
+
+			WHERE
+				game.`is_finished` = 0
+
+			GROUP BY games_users.`game_id`
+
+			HAVING COUNT(games_users.game_id) = 1";
+		
+		$query = Yii::app()->db->createCommand($sql);
+		
+		$rows = $query->queryAll();
+		
+		$return = array();
+		
+		foreach ($rows AS $row)
+		{
+			$return[] = Game::model()->findByPk($row['game_id']);
+		}
+		
+		return $return;
+	}
 }

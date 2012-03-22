@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="css/board.css" type="text/css" />
 		
 		<?php if ($ajaxResponse['is_your_turn'] != true): ?>
-		<meta http-equiv="refresh" content="2" />
+		<meta http-equiv="refresh" content="5" />
 		<?php endif; ?>
 	</head>
 
