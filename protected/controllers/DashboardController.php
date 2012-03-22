@@ -322,6 +322,12 @@ class DashboardController extends Controller
 				if (in_array($aiMove->from, array('e1', 'e8'))
 						&& in_array($aiMove->to, array('c1', 'c8', 'g1', 'g8')))
 				{
+					// This has to be a king of a player whose turn is now ! Otherwise it's not castling !
+					if ($game->Data->getChessBoard()->getSquareByLocation(new \Libs\Coordinates($ai_result['bestmove'][1], $ai_result['bestmove'][0]))
+							->getChessPiece()->getType() == "king"
+							&& $game->Data->getChessBoard()->getSquareByLocation(new \Libs\Coordinates($ai_result['bestmove'][1], $ai_result['bestmove'][0]))
+							->getChessPiece()->getColor() == $engine->getPlayerWhoseTurnIsNow()->getColor())
+					
 					if ($aiMove->to[0] == 'c')
 					{
 						$aiMove->to[0] = 'a';
