@@ -13,6 +13,8 @@
  */
 class User extends CActiveRecord
 {
+	public $repeat_password;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -39,11 +41,13 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, email, password', 'required'),
+			array('name, email, password,repeat_password', 'required'),
+			array('email', 'unique', 'className' => 'User', 'attributeName' => 'email'),
 			array('is_confirmed', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
-			array('email', 'length', 'max'=>250),
+			array('email', 'email'),
 			array('password', 'length', 'max'=>40),
+			array('password', 'compare', 'compareAttribute'=>'repeat_password'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, email, is_confirmed, dt_added, password', 'safe', 'on'=>'search'),
