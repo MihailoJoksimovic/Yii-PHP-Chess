@@ -209,7 +209,7 @@
 			
 			<?php endforeach; ?>
 			
-			
+			<p id="moves_list_last"></p>
 		</div>
 		<!---- #Moves List --->
 		
@@ -222,6 +222,8 @@
 		
 		<script type="text/javascript">
 		$(document).ready(function(){
+			
+			$("#moves_list").scrollTop(5000000000);
 			
 			///
 			///
