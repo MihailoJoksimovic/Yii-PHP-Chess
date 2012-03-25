@@ -118,14 +118,14 @@ class DashboardController extends Controller
 		
 
 		
-		foreach(\Libs\GameExporter::getAlgebraicNotation($game->Data) AS $row)
-		{
-			echo $row . " ";
-		}
-		
-		
-		
-		die();
+//		foreach(\Libs\GameExporter::getAlgebraicNotation($game->Data) AS $row)
+//		{
+//			echo $row . " ";
+//		}
+//		
+//		
+//		
+//		die();
 		
 		
 		if ($game->Data->getWhitePlayer()->getId() != $user_id
