@@ -24,7 +24,7 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><span style="color:gold">I</span>ncredible<span style="color:gold">C</span>hess<span style="color:gold">T</span>ournament</div>
 	</div><!-- header -->
 
 	<div id="mainmenu">
@@ -49,8 +49,7 @@
 	<div class="clear"></div>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-		All Rights Reserved.<br/>
+		<p>Developed by Mihailo Joksimović (56/08)</p>
 		<?php echo Yii::powered(); ?>
 	</div><!-- footer -->
 
