@@ -244,6 +244,8 @@
 					return;
 				}
 				
+				$(this).attr('original_bg', $(this).css('background'));
+				
 				if ( ! from_pos)
 				{
 					from_pos = $(this).attr('id');
@@ -251,7 +253,20 @@
 				else if ( ! to_pos)
 				{
 					to_pos = $(this).attr('id');
-					submitMove(from_pos, to_pos);
+					
+					if (from_pos == to_pos)
+					{
+						$(this).css('background', $(this).attr('original_bg'));
+						
+						from_pos = null; to_pos = null;
+						
+						return;
+					}
+					else
+					{
+						submitMove(from_pos, to_pos);
+					}
+					
 				}
 				
 				$(this).css('background', '#09f');
