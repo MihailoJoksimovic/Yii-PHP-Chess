@@ -33,6 +33,11 @@ class MoveProcessor extends CComponent
 		$sourceSquare = $game->getChessBoard()->getSquareByLocation(new \Libs\Coordinates($moveFromRow, $moveFromColumn));
 		$destinationSquare = $game->getChessBoard()->getSquareByLocation(new \Libs\Coordinates($moveToRow, $moveToColumn));
 		
+		if ($sourceSquare->equal($destinationSquare))
+		{
+			return self::ERROR_INVALID_MOVEMENT;
+		}
+		
 		// If there's no chess piece on the source square -- Movement isn't allowed ffs
 		if (is_null($sourceSquare->getChessPiece()))
 		{
